@@ -63,7 +63,7 @@ namespace {
     const HGCalDDDConstants* ddd = &(hg->topology().dddConstants());
     check_ddd(ddd);
     return ddd;
-  }						
+  }
 
 }
 
@@ -84,9 +84,21 @@ void RecHitTools::getEventSetup(const edm::EventSetup& es) {
     fhOffset_ = (geomEE->topology().dddConstants()).layers(true);
     wmaxEE    = (geomEE->topology().dddConstants()).waferCount(0);
     auto geomFH = static_cast<const HGCalGeometry*>(geom_->getSubdetectorGeometry(DetId::HGCalHSi,ForwardSubdetector::ForwardEmpty));
-    bhOffset_ = fhOffset_;
     wmaxFH    = (geomFH->topology().dddConstants()).waferCount(0);
     fhLastLayer_ = fhOffset_ + (geomFH->topology().dddConstants()).layers(true);
+    auto geomBH = static_cast<const HGCalGeometry*>(geom_->getSubdetectorGeometry(DetId::HGCalHSc,ForwardSubdetector::ForwardEmpty));
+    bhOffset_ = fhOffset_ + (geomBH->topology().dddConstants()).firstLayer() - (geomEE->topology().dddConstants()).firstLayer();
+    bhLastLayer_ = bhOffset_ + (geomBH->topology().dddConstants()).layers(true);
+    std::cout << "bhOffset_: " << bhOffset_ << std::endl; // = 36
+    std::cout << "EE layers: " << (geomEE->topology().dddConstants()).layers(true) << std::endl; // = 28
+    std::cout << "FH layers: " << (geomFH->topology().dddConstants()).layers(true) << std::endl; // = 24
+    std::cout << "BH layers: " << (geomBH->topology().dddConstants()).layers(true) << std::endl; // = 16
+    std::cout << "first EE layer: " << (geomEE->topology().dddConstants()).firstLayer() << std::endl; // = 1
+    std::cout << "first FH layer: " << (geomFH->topology().dddConstants()).firstLayer() << std::endl; // = 1
+    std::cout << "first BH layer: " << (geomBH->topology().dddConstants()).firstLayer() << std::endl; // = 9
+    std::cout << "EE layer at z = 10000: " << (geomEE->topology().dddConstants()).getLayer(10000., true) << std::endl; // = 28
+    std::cout << "FH layer at z = 10000: " << (geomFH->topology().dddConstants()).getLayer(10000., true) << std::endl; // = 24
+    std::cout << "BH layer at z = 10000: " << (geomBH->topology().dddConstants()).getLayer(10000., true) << std::endl; // = 24
   }
   else {
     geometryType_ = 0;
@@ -284,9 +296,9 @@ unsigned int RecHitTools::getLayerWithOffset(const DetId& id) const {
   unsigned int layer = getLayer(id);
   if (id.det() == DetId::Forward && id.subdetId() == HGCHEF ) {
     layer += fhOffset_;
-  } else if (id.det() == DetId::HGCalHSi || id.det() == DetId::HGCalHSc) {
+  } else if (id.det() == DetId::HGCalHSi) {
     layer += fhOffset_;
-  } else if (id.det() == DetId::Hcal && id.subdetId() == HcalEndcap) {
+  } else if ((id.det() == DetId::Hcal && id.subdetId() == HcalEndcap) || id.det() == DetId::HGCalHSc) {
     layer += bhOffset_;
   }
   return layer;
