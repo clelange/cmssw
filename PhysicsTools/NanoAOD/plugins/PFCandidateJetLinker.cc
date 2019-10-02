@@ -56,8 +56,8 @@ class PFCandidateJetLinker : public edm::global::EDProducer<> {
 
         static void fillDescriptions(edm::ConfigurationDescriptions & descriptions) {
             edm::ParameterSetDescription desc;
-            desc.add<std::string>("objName")->setComment("name of the nanoaod::FlatTable to extend with this table");
-            desc.add<std::string>("name")->setComment("name of the nanoaod::FlatTable linked to");
+            desc.add<std::string>("name")->setComment("name of the nanoaod::FlatTable to extend with this table");
+            desc.add<std::string>("objName")->setComment("name of the nanoaod::FlatTable linked to");
             desc.add<std::string>("doc")->setComment("Add Jet indices to PFCandidate collection");
             desc.add<edm::InputTag>("pfcandidates")->setComment("pfcandidates InputTag");
             desc.add<edm::InputTag>("jets")->setComment("jets InputTag");
