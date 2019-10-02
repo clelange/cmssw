@@ -19,7 +19,7 @@ pfCandidatesTable = cms.EDProducer("SimpleCandidateFlatTableProducer",
     ),
 )
 
-pfCandidatesJetLinks = cms.EDProducer("PFCandidateJetLinker",
+pfCandidateJetLinkTable = cms.EDProducer("PFCandidateJetLinkTableProducer",
     pfcandidates = cms.InputTag("packedPFCandidates"),
     jets = cms.InputTag("slimmedJets"),
     name = cms.string("PF"),

@@ -12,9 +12,9 @@
 #include <iostream>
 
 
-class PFCandidateJetLinker : public edm::global::EDProducer<> {
+class PFCandidateJetLinkTableProducer : public edm::global::EDProducer<> {
     public:
-        PFCandidateJetLinker( edm::ParameterSet const & params ) :
+        PFCandidateJetLinkTableProducer( edm::ParameterSet const & params ) :
             objName_(params.getParameter<std::string>("objName")),
             name_(params.getParameter<std::string>("name")),
             doc_(params.getParameter<std::string>("doc")),
@@ -24,7 +24,7 @@ class PFCandidateJetLinker : public edm::global::EDProducer<> {
             produces<nanoaod::FlatTable>(name_); // "PF"
         }
 
-        ~PFCandidateJetLinker() override {}
+        ~PFCandidateJetLinkTableProducer() override {}
 
         void produce(edm::StreamID id, edm::Event& iEvent, const edm::EventSetup& iSetup) const override {
 
@@ -48,7 +48,7 @@ class PFCandidateJetLinker : public edm::global::EDProducer<> {
 
             auto tab = std::make_unique<nanoaod::FlatTable>(ncand, name_, false, true);
 
-            tab->addColumn<int>(objName_ + "Idx_cool", pfcand2jet_index, "Index into " + objName_ + " list for " + name_, nanoaod::FlatTable::IntColumn);
+            tab->addColumn<int>(objName_ + "Idx", pfcand2jet_index, "Index into " + objName_ + " list for " + name_, nanoaod::FlatTable::IntColumn);
 
             iEvent.put(std::move(tab), name_);
         }
@@ -61,7 +61,7 @@ class PFCandidateJetLinker : public edm::global::EDProducer<> {
             desc.add<std::string>("doc")->setComment("Add Jet indices to PFCandidate collection");
             desc.add<edm::InputTag>("pfcandidates")->setComment("pfcandidates InputTag");
             desc.add<edm::InputTag>("jets")->setComment("jets InputTag");
-            descriptions.add("pfCandidateJetLinker", desc);
+            descriptions.add("pfCandidateJetLinkTableProducer", desc);
         }
 
     protected:
@@ -71,5 +71,5 @@ class PFCandidateJetLinker : public edm::global::EDProducer<> {
 };
 
 #include "FWCore/Framework/interface/MakerMacros.h"
-DEFINE_FWK_MODULE(PFCandidateJetLinker);
+DEFINE_FWK_MODULE(PFCandidateJetLinkTableProducer);
 
