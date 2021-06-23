@@ -14,6 +14,7 @@ from PhysicsTools.NanoAOD.extraflags_cff import *
 from PhysicsTools.NanoAOD.ttbarCategorization_cff import *
 from PhysicsTools.NanoAOD.genparticles_cff import *
 from PhysicsTools.NanoAOD.particlelevel_cff import *
+from PhysicsTools.NanoAOD.pfcandidates_cff import *
 from PhysicsTools.NanoAOD.genWeightsTable_cfi import *
 from PhysicsTools.NanoAOD.genVertex_cff import *
 from PhysicsTools.NanoAOD.vertices_cff import *
@@ -124,7 +125,7 @@ nanoSequence = cms.Sequence(nanoSequenceCommon + nanoSequenceOnlyData + nanoSequ
 
 ( run2_nanoAOD_106Xv1 & ~run2_nanoAOD_devel).toReplaceWith(nanoSequence, nanoSequence.copyAndExclude([nanoSequenceOnlyData]))
 
-nanoSequenceFS = cms.Sequence(genParticleSequence + genVertexTables + particleLevelSequence + nanoSequenceCommon + jetMC + muonMC + electronMC + lowPtElectronMC + photonMC + tauMC + boostedTauMC + metMC + ttbarCatMCProducers +  globalTablesMC + btagWeightTable + genWeightsTable + genVertexTable + genParticleTables + particleLevelTables + lheInfoTable  + ttbarCategoryTable )
+nanoSequenceFS = cms.Sequence(genParticleSequence + genVertexTables + particleLevelSequence + nanoSequenceCommon + jetMC + muonMC + electronMC + lowPtElectronMC + photonMC + tauMC + boostedTauMC + metMC + ttbarCatMCProducers +  globalTablesMC + btagWeightTable + genWeightsTable + genVertexTable + genParticleTables + particleLevelTables + lheInfoTable  + ttbarCategoryTable + pfCandidatesTable + pfCandidateJetLinkTable )
 
 (run2_nanoAOD_92X | run2_miniAOD_80XLegacy | run2_nanoAOD_94X2016 | run2_nanoAOD_94X2016 | \
     run2_nanoAOD_94XMiniAODv1 | run2_nanoAOD_94XMiniAODv2 | \
@@ -155,7 +156,7 @@ def nanoAOD_addTauIds(process):
 
 def nanoAOD_addBoostedTauIds(process):
     updatedBoostedTauName = "slimmedTausBoostedNewID"
-    boostedTauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, debug=False, 
+    boostedTauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, debug=False,
                                                      originalTauName = "slimmedTausBoosted",
                                                      updatedTauName = updatedBoostedTauName,
                                                      postfix="Boosted",
@@ -168,7 +169,7 @@ def nanoAOD_addBoostedTauIds(process):
                                       getattr(process, updatedBoostedTauName))
 
     return process
- 
+
 
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 def nanoAOD_addDeepInfo(process,addDeepBTag,addDeepFlavour):
@@ -269,7 +270,7 @@ def nanoAOD_recalibrateMETs(process,isData):
         )
         process.patJetsPuppi.addGenPartonMatch = cms.bool(False)
         process.patJetsPuppi.addGenJetMatch = cms.bool(False)
-    
+
     runMetCorAndUncFromMiniAOD(process,isData=isData,metType="Puppi",postfix="Puppi",jetFlavor="AK4PFPuppi", recoMetFromPFCs=bool(nanoAOD_PuppiV15_switch.recoMetFromPFCs), reclusterJets=bool(nanoAOD_PuppiV15_switch.reclusterJets))
     process.nanoSequenceCommon.insert(process.nanoSequenceCommon.index(process.jetSequence),cms.Sequence(process.puppiMETSequence+process.fullPatMetSequencePuppi))
     return process
@@ -445,7 +446,7 @@ def nanoAOD_customizeMC(process):
 
 def nanoWmassGenCustomize(process):
     pdgSelection="?(abs(pdgId) == 11|| abs(pdgId)==13 || abs(pdgId)==15 ||abs(pdgId)== 12 || abs(pdgId)== 14 || abs(pdgId)== 16|| abs(pdgId)==24|| pdgId== 23)"
-    # Keep precision same as default RECO for selected particles                                                                                                                                                                                                                  
+    # Keep precision same as default RECO for selected particles
     ptPrecision="{}?{}:{}".format(pdgSelection, CandVars.pt.precision.value(),genParticleTable.variables.pt.precision.value())
     process.genParticleTable.variables.pt.precision=cms.string(ptPrecision)
     phiPrecision="{} ? {} : {}".format(pdgSelection, CandVars.phi.precision.value(), genParticleTable.variables.phi.precision.value())
