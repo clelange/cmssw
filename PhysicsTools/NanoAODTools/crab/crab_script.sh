@@ -1,3 +1,4 @@
+#!/bin/bash
 #this is not meant to be run locally
 #
 echo Check if TTY
@@ -23,5 +24,5 @@ mv module $CMSSW_BASE/module
 mv python $CMSSW_BASE/python
 
 echo Found Proxy in: $X509_USER_PROXY
-python crab_script.py $1
+python3 crab_script.py "$1"
 fi

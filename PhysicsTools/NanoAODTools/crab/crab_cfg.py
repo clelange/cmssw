@@ -21,7 +21,7 @@ config.Data.splitting = 'FileBased'
 config.Data.unitsPerJob = 2
 config.Data.totalUnits = 10
 
-config.Data.outLFNDirBase = '/store/user/%s/NanoPost' % (
+config.Data.outLFNDirBase = '/store/user/rucio/%s/NanoPost' % (
     getUsernameFromSiteDB())
 config.Data.publication = False
 config.Data.outputDatasetTag = 'NanoTestPost'
